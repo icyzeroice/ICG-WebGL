@@ -98,6 +98,7 @@ module.exports = function (env = {}) {
     devServer: {
       contentBase: path.join(__dirname, env.server || '.'),
       compress: true,
+      host: '0.0.0.0',
       port: 3000,
       hot: true,
       // ...
