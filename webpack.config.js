@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const OpenBrowserPlugin = require('open-browser-webpack-plugin');
 const webpack = require('webpack');
 
 module.exports = function (env = {}) {
@@ -52,7 +51,6 @@ module.exports = function (env = {}) {
     });
   } else {
     plugins.push(
-      new OpenBrowserPlugin({url: 'http://localhost:3000'}),
       new webpack.HotModuleReplacementPlugin(),
     );
   }
