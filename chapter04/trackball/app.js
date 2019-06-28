@@ -18,6 +18,7 @@ let axis = [0, 0, 1];
 
 let trackingMouse = false;
 let trackballMove = false;
+let mouseMoving = false;
 
 let lastPos = [0, 0, 0];
 let startX,
@@ -188,6 +189,17 @@ function init() {
   rotationQuaternionLoc = gl.getUniformLocation(program, 'r');
   gl.uniform4fv(rotationQuaternionLoc, rotationQuaternion);
 
+  /**
+   *          ^  y
+   *          |
+   *      +---+---+ (1,1)
+   *      |   |   |
+   *    --+---+---+---> x
+   *      |   |   |
+   *      +---+---+ canvas
+   * (-1,-1)  |
+   * 
+   */
   canvas.addEventListener('mousedown', (event) => {
     const x = 2 * event.clientX / width - 1;
     const y = 2 * (height - event.clientY) / height - 1;
@@ -201,10 +213,24 @@ function init() {
   });
 
   canvas.addEventListener('mousemove', (event) => {
+    // mouseMoving = true;
+
     const x = 2 * event.clientX / width - 1;
     const y = 2 * (height - event.clientY) / height - 1;
     mouseMotion(x, y);
   });
+
+  /*
+  // In case the mouse moves out of canvas before firing the event 'mouseup'
+  canvas.addEventListener('mouseout', (event) => {
+    if (!mouseMoving) return;
+
+    mouseMoving = false;
+    const x = 2 * event.clientX / width - 1;
+    const y = 2 * (height - event.clientY) / height - 1;
+    stopMotion(x, y);
+  })
+  */
 
   render();
 }
@@ -217,8 +243,13 @@ function render() {
     const c = Math.cos(angle / 2.0);
     const s = Math.sin(angle / 2.0);
 
+    console.log(axis)
+    console.log(s)
+    console.log(vec3(axis) * s)
+
     const rotation = vec4(c, vec3(axis) * s);
     rotationQuaternion = multq(rotationQuaternion, rotation);
+    // FIXME: rotationQuaternion is out of the range later
     // console.log(rotationQuaternion);
     gl.uniform4fv(rotationQuaternionLoc, rotationQuaternion);
   }
